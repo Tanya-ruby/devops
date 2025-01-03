@@ -5,23 +5,31 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Creating virtual environment and installing dependencies...'
+                sh '''
+                python3 -m venv venv
+                source venv/bin/activate
+                pip install -r ${WORKSPACE}/python-flask-app/requirements.txt
+                '''
             }
         }
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'python3 -m unittest discover -s .'
+                sh '''
+                source venv/bin/activate
+                python3 -m unittest discover -s ${WORKSPACE}/python-flask-app
+                '''
             }
         }
         stage('Deploy') {
-    steps {
-        echo 'Deploying application...'
-        sh '''
-        mkdir -p ${WORKSPACE}/python-app-deploy
-        cp ${WORKSPACE}/python-flask-app/app.py ${WORKSPACE}/python-app-deploy/
-        '''
-    }
-}
+            steps {
+                echo 'Deploying application...'
+                sh '''
+                mkdir -p ${WORKSPACE}/python-app-deploy
+                cp ${WORKSPACE}/python-flask-app/app.py ${WORKSPACE}/python-app-deploy/
+                '''
+            }
+        }
         stage('Run Application') {
             steps {
                 echo 'Running application...'
@@ -35,7 +43,8 @@ pipeline {
             steps {
                 echo 'Testing application...'
                 sh '''
-                python3 ${WORKSPACE}/test_app.py
+                source venv/bin/activate
+                python3 ${WORKSPACE}/python-flask-app/test_app.py
                 '''
             }
         }
