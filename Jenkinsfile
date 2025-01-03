@@ -7,7 +7,7 @@ pipeline {
                 echo 'Creating virtual environment and installing dependencies...'
                 sh '''
                 python3 -m venv venv
-                source venv/bin/activate
+                . venv/bin/activate
                 pip install -r ${WORKSPACE}/python-flask-app/requirements.txt
                 '''
             }
@@ -16,7 +16,7 @@ pipeline {
             steps {
                 echo 'Running tests...'
                 sh '''
-                source venv/bin/activate
+                . venv/bin/activate
                 python3 -m unittest discover -s ${WORKSPACE}/python-flask-app
                 '''
             }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 echo 'Testing application...'
                 sh '''
-                source venv/bin/activate
+                . venv/bin/activate
                 python3 ${WORKSPACE}/python-flask-app/test_app.py
                 '''
             }
